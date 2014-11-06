@@ -14,7 +14,7 @@
 @implementation PFUser (Digits)
 
 + (void)loginWithDigitsInBackground:(void (^)(PFUser *user, NSError *error))block {
-    [[self loginWithDigitsInBackground] continueWithBlock: ^id (BFTask *task) {
+    [[self loginWithDigitsInBackground] continueWithExecutor:[BFExecutor mainThreadExecutor] withBlock: ^id (BFTask *task) {
         block(task.result, task.error);
         return nil;
     }];
