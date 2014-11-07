@@ -24,6 +24,10 @@
     BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
     
     [[Digits sharedInstance] authenticateWithCompletion: ^(DGTSession *session, NSError *error) {
+    	if (error) {
+            [taskCompletion setError:error];
+            return;
+        }
         [[[PFCloud callFunctionInBackground:@"loginWithDigits"
                              withParameters:@{
                                               @"userId": session.userID,
