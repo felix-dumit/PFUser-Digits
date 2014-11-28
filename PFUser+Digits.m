@@ -1,9 +1,9 @@
 //
-//  PFFile+NSCoding.m
+//  PFUser+Digits.m
 //  UpdateZen
 //
-//  Created by Martin Rybak on 2/3/14.
-//  Copyright (c) 2014 UpdateZen. All rights reserved.
+//  Created by Felix Dumit.
+//  Copyright (c) 2014 Felix Dumit. All rights reserved.
 //
 
 #import <TwitterKit/TwitterKit.h>
