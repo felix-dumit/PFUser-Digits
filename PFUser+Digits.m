@@ -1,11 +1,11 @@
 //
 //  PFUser+Digits.m
-//  UpdateZen
 //
-//  Created by Felix Dumit.
+//  Created by Felix Dumit on 2/3/14.
 //  Copyright (c) 2014 Felix Dumit. All rights reserved.
 //
 
+#import <Bolts/Bolts.h>
 #import <TwitterKit/TwitterKit.h>
 #import "PFUser+Digits.h"
 
@@ -24,10 +24,6 @@
     BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
     
     [[Digits sharedInstance] authenticateWithCompletion: ^(DGTSession *session, NSError *error) {
-    	if (error) {
-            [taskCompletion setError:error];
-            return;
-        }
         [[[PFCloud callFunctionInBackground:@"loginWithDigits"
                              withParameters:@{
                                               @"userId": session.userID,
