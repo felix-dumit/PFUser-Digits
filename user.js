@@ -27,10 +27,22 @@ Parse.Cloud.define("loginWithDigits", function(request, response) {
     Parse.Cloud.useMasterKey();
 
     var userId = request.params.userId;
+    var requestURL = request.params.requestURL;
+    var authHeader = {
+        'Authorization': request.params.authHeader
+    };
 
-    var query = new Parse.Query(Parse.User);
-    query.equalTo('digitsId', userId);
-    query.first().then(function(user) {
+    Parse.Cloud.httpRequest({
+        url: requestURL,
+        headers: authHeader
+    }).then(function(res) {
+        if (res.status != 200) {
+            return Parse.Promise.error("error with echo twitter authentication");
+        }
+        var query = new Parse.Query(Parse.User);
+        query.equalTo('digitsId', userId);
+        return query.first();
+    }).then(function(user) {
         return user || createNewDigitsUser(userId);
     }).then(function(user) {
         user.set('phone', request.params.phoneNumber);

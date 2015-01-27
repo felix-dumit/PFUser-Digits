@@ -10,6 +10,7 @@
 #import "PFUser+Digits.h"
 
 
+
 @implementation PFUser (Digits)
 
 + (void)loginWithDigitsInBackground:(void (^)(PFUser *user, NSError *error))block {
@@ -30,33 +31,45 @@
 }
 
 + (BFTask *)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor {
-    
-    BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
-
     DGTAppearance *appeareance = [[DGTAppearance alloc] init];
     appeareance.backgroundColor = backgroundColor;
-    appeareance.accentColor = accentColor;    
+    appeareance.accentColor = accentColor;
+    
+    BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
     
     [[Digits sharedInstance] authenticateWithDigitsAppearance:appeareance viewController:nil title:title completion: ^(DGTSession *session, NSError *error) {
         if (error) {
             [taskCompletion setError:error];
             return;
         }
+        
+        TWTROAuthSigning *oauthSigning =
+        [[TWTROAuthSigning alloc]
+         initWithAuthConfig:
+         [Twitter sharedInstance].authConfig
+         authSession:session];
+        
+        NSDictionary *authHeaders = [oauthSigning OAuthEchoHeadersToVerifyCredentials];
+        NSString *requestURLString = authHeaders[TWTROAuthEchoRequestURLStringKey];
+        NSString *authorizationHeader = authHeaders[TWTROAuthEchoAuthorizationHeaderKey];
+        
         [[[PFCloud callFunctionInBackground:@"loginWithDigits"
                              withParameters:@{
                                               @"userId": session.userID,
-                                              @"phoneNumber": session.phoneNumber
+                                              @"phoneNumber": session.phoneNumber,
+                                              @"requestURL": requestURLString,
+                                              @"authHeader": authorizationHeader,
                                               }
            ]
           continueWithSuccessBlock: ^id (BFTask *task) {
               return [PFUser becomeInBackground:task.result];
           }]
          continueWithBlock: ^id (BFTask *task) {
-              [[PFUser currentUser] setObject:session.phoneNumber forKey:@"phone"];
               if (task.error) {
                     [taskCompletion setError:error];
                 }
                 else {
+                    [[PFUser currentUser] setObject:session.phoneNumber forKey:@"phone"];
                     [taskCompletion setResult:task.result];
                 }
               return nil;
