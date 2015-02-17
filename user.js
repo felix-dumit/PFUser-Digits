@@ -50,7 +50,7 @@ Parse.Cloud.define("linkWithDigits", function(request, response){
 
     verifyDigitsLogin(requestURL, authHeader).then(function(){
         var query = new Parse.Query(Parse.User);
-        query.equalTo('digitsId', userId);
+        query.equalTo('digitsId', digitsId);
         return query.first();
     }).then(function(user){
         if(user){

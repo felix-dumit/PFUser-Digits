@@ -102,6 +102,10 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
             }];
 }
 
+- (BOOL)isLinkedWithDigits {
+    return !([self objectForKey:@"digitsId"] == nil);
+}
+
 #pragma mark - private Digits login
 
 + (BFTask *)_privateDigitsLoginWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor {

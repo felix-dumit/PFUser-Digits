@@ -24,4 +24,7 @@
 - (BFTask *)linkWithDigitsInBackground;
 - (BFTask *)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor;
 
+- (BOOL)isLinkedWithDigits;
+
+
 @end
