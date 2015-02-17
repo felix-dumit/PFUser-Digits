@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <Parse/Parse.h>
 
 @interface PFUser (Digits)
 
@@ -16,5 +16,12 @@
 
 + (BFTask *)loginWithDigitsInBackground;
 + (BFTask *)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor;
+
+
+- (void)linkWithDigitsInBackground:(void (^)(BOOL succeeded, NSError *error))block;
+- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor completion:(void (^)(BOOL succeeded, NSError *error))block;
+
+- (BFTask *)linkWithDigitsInBackground;
+- (BFTask *)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor;
 
 @end
