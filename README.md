@@ -13,6 +13,8 @@ require('cloud/user.js');
 ``` 
 or copy the contents to main.js
 
+#Login with Digits
+
 To use just call the function which will trigger the Digits sign-in flow and when succeded, will authenticate or create a new user on Parse.
 
 You may call using blocks: 
@@ -35,6 +37,28 @@ Or Using Bolts:
 }];
 ```
 
+#Link Existing Account
+
+You can also link an existing account (anonymous or not) with Digits. This works in the same way as linking with Facebook and allows you to later on log back in using the Digits sign-in
+
+```objc
+[[PFUser currentUser] linkWithDigitsInBackground]; //returns BFTask*
+```
+or 
+```objc
+[[PFUser currentUser] linkWithDigitsInBackground:^(PFUser* user, NSError* error) {}]; //block callback
+```
+
+#Customising
+
+For all the previous examples you can customize the *Title*, *Background Color* and *Accent Color* (Font).
+For example:
+```objc
+[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" backgroundColor:[UIColor whiteColor] accentColor:[UIColor redColor]];
+```
+
+
+#License
 The MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
