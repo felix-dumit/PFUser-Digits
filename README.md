@@ -20,7 +20,7 @@ To use just call the function which will trigger the Digits sign-in flow and whe
 You may call using blocks: 
 
 ```objc
-[User loginWithDigitsInBackground:^(PFUser *user, NSError *error) {
+[PFUser loginWithDigitsInBackground:^(PFUser *user, NSError *error) {
     if(!error){
       // do something with user
     }
@@ -29,7 +29,7 @@ You may call using blocks:
 Or Using Bolts:
 
 ```objc
-[[User loginWithDigitsInBackground] continueWithBlock: ^id (BFTask *task) {
+[[PFUser loginWithDigitsInBackground] continueWithBlock: ^id (BFTask *task) {
     if(!task.error){
       PFUser *user = task.result;
       // do something with user
