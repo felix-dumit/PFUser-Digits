@@ -2,22 +2,32 @@ var _ = require('underscore');
 
 var Buffer = require('buffer').Buffer;
 
+var randomString = function(){
+    var str = new Buffer(24);
+    _.times(24, function (i) {
+        str.set(i, _.random(0, 255));
+    });
+    return str.toString('base64');
+}
+
 var createNewDigitsUser = function (userId) {
 
     var user = new Parse.User();
 
-    var username = new Buffer(24);
-    var password = new Buffer(24);
-    _.times(24, function (i) {
-        username.set(i, _.random(0, 255));
-        password.set(i, _.random(0, 255));
-    });
-    user.set("username", username.toString('base64'));
-    user.set("password", password.toString('base64'));
+    var username = randomString();
+    var password = randomString();
+
+    user.set("username", username);
+    user.set("password", password);
 
     user.set('digitsId', userId);
 
-    return user.signUp();
+    return user.signUp().then(function(user){
+        return Parse.User.logIn(username, password);
+    }).then(function(user){
+        return user;
+    }, function(error){
+    });
 
 };
 
@@ -69,6 +79,7 @@ Parse.Cloud.define("linkWithDigits", function(request, response){
     });
 });
 
+
 Parse.Cloud.define("loginWithDigits", function (request, response) {
 
     Parse.Cloud.useMasterKey();
@@ -76,13 +87,17 @@ Parse.Cloud.define("loginWithDigits", function (request, response) {
     var userId = request.params.digitsId;
     var requestURL = request.params.requestURL;
     var authHeader = request.params.authHeader;
+    var password = randomString();
 
     verifyDigitsLogin(requestURL, authHeader).then(function(){
         var query = new Parse.Query(Parse.User);
         query.equalTo('digitsId', userId);
-        return query.first();
+        return query.first({useMasterKey: true}).then(function(user){
+            user.set("password", password);
+            return user.save();
+        });
     }).then(function (user) {
-        return user || createNewDigitsUser(userId);
+        return Parse.User.logIn(user.get("username"), password) || createNewDigitsUser(userId);
     }).then(function (user) {
         user.set('phone', request.params.phoneNumber);
         return user.save();
