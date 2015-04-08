@@ -24,9 +24,6 @@ var createNewDigitsUser = function (userId) {
 
     return user.signUp().then(function(user){
         return Parse.User.logIn(username, password);
-    }).then(function(user){
-        return user;
-    }, function(error){
     });
 
 };
@@ -97,7 +94,12 @@ Parse.Cloud.define("loginWithDigits", function (request, response) {
             return user.save();
         });
     }).then(function (user) {
-        return Parse.User.logIn(user.get("username"), password) || createNewDigitsUser(userId);
+        if(user){
+            return Parse.User.logIn(user.get("username"), password);
+        }
+        else {
+            createNewDigitsUser(userId);
+        }
     }).then(function (user) {
         user.set('phone', request.params.phoneNumber);
         return user.save();
