@@ -6,7 +6,7 @@
 //
 
 #import <Bolts/Bolts.h>
-#import <TwitterKit/TwitterKit.h>
+#import <DigitsKit/DigitsKit.h>
 #import "PFUser+Digits.h"
 
 static NSString *const kSessionKey = @"session";
@@ -121,7 +121,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
             return;
         }
         
-        TWTROAuthSigning *oauthSigning = [[TWTROAuthSigning alloc] initWithAuthConfig:[Twitter sharedInstance].authConfig
+        DGTOAuthSigning *oauthSigning = [[DGTOAuthSigning alloc] initWithAuthConfig:[Digits sharedInstance].authConfig
                                                                           authSession:session];
         
         NSDictionary *authHeaders = [oauthSigning OAuthEchoHeadersToVerifyCredentials];
