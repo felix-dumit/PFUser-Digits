@@ -90,15 +90,17 @@ Parse.Cloud.define("loginWithDigits", function (request, response) {
         var query = new Parse.Query(Parse.User);
         query.equalTo('digitsId', userId);
         return query.first({useMasterKey: true}).then(function(user){
+          if(user){
             user.set("password", password);
             return user.save();
+          }
         });
     }).then(function (user) {
         if(user){
             return Parse.User.logIn(user.get("username"), password);
         }
         else {
-            createNewDigitsUser(userId);
+            return createNewDigitsUser(userId);
         }
     }).then(function (user) {
         user.set('phone', request.params.phoneNumber);
