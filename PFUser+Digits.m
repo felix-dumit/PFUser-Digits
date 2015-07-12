@@ -85,7 +85,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
     appeareance.accentColor = accentColor;
     
     
-    return [[[self class] _privateDigitsLoginWithTitle:title backgroundColor:backgroundColor accentColor:accentColor]
+    return [[[[self class] _privateDigitsLoginWithTitle:title backgroundColor:backgroundColor accentColor:accentColor]
             continueWithSuccessBlock: ^id (BFTask *task) {
                 DGTSession *session = [task.result objectForKey:kSessionKey];
                 NSString *requestURLString = [task.result objectForKey:kRequestURLStringKey];
@@ -99,6 +99,8 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
                                                            @"requestURL": requestURLString,
                                                            @"authHeader": authorizationHeader,
                                                            }];
+            }] continueWithSuccessBlock:^id (BFTask *task) {
+                 return [self fetchInBackground];
             }];
 }
 
