@@ -1,6 +1,5 @@
 //
 //  PFUser+Digits.h
-//  NameBrain2
 //
 //  Created by Felix Dumit on 11/6/14.
 //  Copyright (c) 2015 Felix. All rights reserved.
@@ -9,20 +8,22 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
+@class DGTAppearance;
+
 @interface PFUser (Digits)
 
-+ (void)loginWithDigitsInBackground:(void (^)(PFUser *user, NSError *error))block;
-+ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor completion:(void (^)(PFUser *user, NSError *error))block;
++ (void)loginWithDigitsInBackground:(void(^) (PFUser * user, NSError * error))block;
++ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void(^) (PFUser * user, NSError * error))block;
 
-+ (BFTask *)loginWithDigitsInBackground;
-+ (BFTask *)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor;
++ (BFTask<PFUser*> *)loginWithDigitsInBackground;
++ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance;
 
+- (void)linkWithDigitsInBackground:(void(^) (BOOL succeeded, NSError * error))block;
 
-- (void)linkWithDigitsInBackground:(void (^)(BOOL succeeded, NSError *error))block;
-- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor completion:(void (^)(BOOL succeeded, NSError *error))block;
+- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void(^) (BOOL succeeded, NSError * error))block;
 
-- (BFTask *)linkWithDigitsInBackground;
-- (BFTask *)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor;
+- (BFTask<NSNumber*> *)linkWithDigitsInBackground;
+- (BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance;
 
 - (BOOL)isLinkedWithDigits;
 

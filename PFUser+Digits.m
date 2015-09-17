@@ -14,21 +14,24 @@ static NSString *const kRequestURLStringKey = @"requestURLString";
 static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 
 
-
 @implementation PFUser (Digits)
 
+
+-(BOOL)isLinkedWithDigits {
+    return !([self objectForKey:@"digitsId"] == nil);
+}
 
 #pragma mark - Parse Digits Login
 + (void)loginWithDigitsInBackground:(void (^)(PFUser *user, NSError *error))block
 {
-    [self loginWithDigitsInBackgroundWithTitle:nil backgroundColor:nil accentColor:nil completion:block];
+    [self loginWithDigitsInBackgroundWithTitle:nil appeareance:nil];
 }
 
-+ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor completion:(void (^)(PFUser *user, NSError *error))block
++ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void (^)(PFUser *user, NSError *error))block
 {
     [[self loginWithDigitsInBackgroundWithTitle:title
-                                backgroundColor:backgroundColor
-                                    accentColor:accentColor] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                    appeareance:appearance]
+     continueWithExecutor:[BFExecutor mainThreadExecutor]
      withBlock: ^id (BFTask *task) {
          if (block) {
              block(task.result, task.error);
@@ -38,22 +41,14 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
      }];
 }
 
-+ (BFTask *)loginWithDigitsInBackground
++ (BFTask<PFUser*> *)loginWithDigitsInBackground
 {
-    return [self loginWithDigitsInBackgroundWithTitle:nil backgroundColor:nil accentColor:nil];
+    return [self loginWithDigitsInBackgroundWithTitle:nil appeareance:nil];
 }
 
-+ (BFTask *)loginWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor
-{
-    DGTAppearance *appeareance = [[DGTAppearance alloc] init];
-    
-    appeareance.backgroundColor = backgroundColor;
-    appeareance.accentColor = accentColor;
-    
-    
++ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance{
     return [[[self _privateDigitsLoginWithTitle:title
-                                backgroundColor:backgroundColor
-                                    accentColor:accentColor
+                                     appearance:appearance
                                     phoneNumber:nil]
              continueWithSuccessBlock: ^id (BFTask *task) {
                  DGTSession *session = [task.result
@@ -79,14 +74,14 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 #pragma mark - Parse Digits link
 - (void)linkWithDigitsInBackground:(void (^)(BOOL succeeded, NSError *error))block
 {
-    [self linkWithDigitsInBackgroundWithTitle:nil backgroundColor:nil accentColor:nil completion:block];
+    [self linkWithDigitsInBackgroundWithTitle:nil appeareance:nil completion:block];
 }
 
-- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor completion:(void (^)(BOOL succeeded, NSError *error))block
+- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void (^)(BOOL succeeded, NSError *error))block
 {
     [[self linkWithDigitsInBackgroundWithTitle:title
-                               backgroundColor:backgroundColor
-                                   accentColor:accentColor] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                   appeareance:appearance]
+     continueWithExecutor:[BFExecutor mainThreadExecutor]
      withBlock: ^id (BFTask *task) {
          if (block) {
              block(task.error == nil, task.error);
@@ -96,21 +91,15 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
      }];
 }
 
-- (BFTask *)linkWithDigitsInBackground
+- (BFTask<NSNumber*> *)linkWithDigitsInBackground
 {
-    return [self linkWithDigitsInBackgroundWithTitle:nil backgroundColor:nil accentColor:nil];
+    return [self linkWithDigitsInBackgroundWithTitle:nil appeareance:nil];
 }
 
-- (BFTask *)linkWithDigitsInBackgroundWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor
-{
-    DGTAppearance *appeareance = [[DGTAppearance alloc] init];
-    
-    appeareance.backgroundColor = backgroundColor;
-    appeareance.accentColor = accentColor;
-    
-    return [[[[self class] _privateDigitsLoginWithTitle:title
-                                        backgroundColor:backgroundColor
-                                            accentColor:accentColor
+-(BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance *)appearance {
+
+    return [[[[[self class] _privateDigitsLoginWithTitle:title
+                                             appearance:appearance
                                             phoneNumber:[self objectForKey:@"phone"]]
              continueWithSuccessBlock: ^id (BFTask *task) {
                  DGTSession *session = [task.result
@@ -119,7 +108,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
                                                objectForKey:kRequestURLStringKey];
                  NSString *authorizationHeader = [task.result
                                                   objectForKey:kAuthorizationHeaderKey];
-                 
+
                  return [PFCloud callFunctionInBackground:@"linkWithDigits"
                                            withParameters:@{
                                                             @"userId": self.objectId,
@@ -130,27 +119,18 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
                                                             }];
              }] continueWithSuccessBlock:^id (BFTask *task) {
                  return [self fetchInBackground];
+             }] continueWithBlock:^id(BFTask *task) {
+                 return @(task.error != nil);
              }];
 }
 
-- (BOOL)isLinkedWithDigits
-{
-    return !([self objectForKey:@"digitsId"] == nil);
-}
-
 #pragma mark - private Digits login
-
-+ (BFTask *)_privateDigitsLoginWithTitle:(NSString *)title backgroundColor:(UIColor *)backgroundColor accentColor:(UIColor *)accentColor phoneNumber:(NSString *)phoneNumber
-{
-    DGTAppearance *appeareance = [[DGTAppearance alloc] init];
-    
-    appeareance.backgroundColor = backgroundColor;
-    appeareance.accentColor = accentColor;
++(BFTask*)_privateDigitsLoginWithTitle:(NSString*)title appearance:(DGTAppearance*)appearance phoneNumber:(NSString*)phoneNumber {
     
     BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
     
     [[Digits sharedInstance] authenticateWithPhoneNumber:phoneNumber
-                                        digitsAppearance:appeareance
+                                        digitsAppearance:appearance
                                           viewController:nil
                                                    title:title
                                               completion:^(DGTSession *session, NSError *error) {
