@@ -1,4 +1,4 @@
-//
+  //
 //  PFUser+Digits.m
 //
 //  Created by Felix Dumit on 11/6/14.
@@ -24,13 +24,13 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 #pragma mark - Parse Digits Login
 + (void)loginWithDigitsInBackground:(void (^)(PFUser *user, NSError *error))block
 {
-    [self loginWithDigitsInBackgroundWithTitle:nil appeareance:nil];
+    [self loginWithDigitsInBackgroundWithTitle:nil appearance:nil];
 }
 
-+ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void (^)(PFUser *user, NSError *error))block
++ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void (^)(PFUser *user, NSError *error))block
 {
     [[self loginWithDigitsInBackgroundWithTitle:title
-                                    appeareance:appearance]
+                                    appearance:appearance]
      continueWithExecutor:[BFExecutor mainThreadExecutor]
      withBlock: ^id (BFTask *task) {
          if (block) {
@@ -43,10 +43,10 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 
 + (BFTask<PFUser*> *)loginWithDigitsInBackground
 {
-    return [self loginWithDigitsInBackgroundWithTitle:nil appeareance:nil];
+    return [self loginWithDigitsInBackgroundWithTitle:nil appearance:nil];
 }
 
-+ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance{
++ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance{
     return [[[self _privateDigitsLoginWithTitle:title
                                      appearance:appearance
                                     phoneNumber:nil]
@@ -74,13 +74,13 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 #pragma mark - Parse Digits link
 - (void)linkWithDigitsInBackground:(void (^)(BOOL succeeded, NSError *error))block
 {
-    [self linkWithDigitsInBackgroundWithTitle:nil appeareance:nil completion:block];
+    [self linkWithDigitsInBackgroundWithTitle:nil appearance:nil completion:block];
 }
 
-- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void (^)(BOOL succeeded, NSError *error))block
+- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void (^)(BOOL succeeded, NSError *error))block
 {
     [[self linkWithDigitsInBackgroundWithTitle:title
-                                   appeareance:appearance]
+                                   appearance:appearance]
      continueWithExecutor:[BFExecutor mainThreadExecutor]
      withBlock: ^id (BFTask *task) {
          if (block) {
@@ -93,10 +93,10 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 
 - (BFTask<NSNumber*> *)linkWithDigitsInBackground
 {
-    return [self linkWithDigitsInBackgroundWithTitle:nil appeareance:nil];
+    return [self linkWithDigitsInBackgroundWithTitle:nil appearance:nil];
 }
 
--(BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance *)appearance {
+-(BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance *)appearance {
 
     return [[[[[self class] _privateDigitsLoginWithTitle:title
                                              appearance:appearance
