@@ -51,10 +51,13 @@ or
 
 #Customising
 
-For all the previous examples you can customize the *Title*, *Background Color* and *Accent Color* (Font).
+For all the previous examples you can pass an `DGTAppearance` object to customize the *Title*, *Background Color*, *Accent Color* (Font), and *Logo Image*.
 For example:
 ```objc
-[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" backgroundColor:[UIColor whiteColor] accentColor:[UIColor redColor]];
+DGTAppearance* appearance = [DGTAppearance new];
+appearance.backgroundColor = [UIColor redColor];
+...
+[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" appearance:appearance];
 ```
 
 
