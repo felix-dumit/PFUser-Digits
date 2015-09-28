@@ -13,17 +13,17 @@
 @interface PFUser (Digits)
 
 + (void)loginWithDigitsInBackground:(void(^) (PFUser * user, NSError * error))block;
-+ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void(^) (PFUser * user, NSError * error))block;
++ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void(^) (PFUser * user, NSError * error))block;
 
 + (BFTask<PFUser*> *)loginWithDigitsInBackground;
-+ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance;
++ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance;
 
 - (void)linkWithDigitsInBackground:(void(^) (BOOL succeeded, NSError * error))block;
 
-- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance completion:(void(^) (BOOL succeeded, NSError * error))block;
+- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void(^) (BOOL succeeded, NSError * error))block;
 
 - (BFTask<NSNumber*> *)linkWithDigitsInBackground;
-- (BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appeareance:(DGTAppearance*)appearance;
+- (BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance;
 
 - (BOOL)isLinkedWithDigits;
 
