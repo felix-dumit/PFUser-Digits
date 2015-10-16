@@ -60,6 +60,10 @@ appearance.backgroundColor = [UIColor redColor];
 [PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" appearance:appearance];
 ```
 
+#Improvements
+If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
+This is due to the fact that currently the only workaround I found to returning a session token from CloudCode was to login the user - and for that you need to specify the password. So the solution for now is to change the user's password before every login.
+Would really like a better solution so if you have any ideas please let me know.
 
 #License
 The MIT License
