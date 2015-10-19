@@ -3,8 +3,7 @@ PFUser-Digits
 
 A way to authenticate Parse Users using the Twitter Digits API
 
-To call make sure you setup https://fabric.io/ for Twitter login and also setup your project with Parse
-https://www.parse.com/docs/ios_guide#top/iOS
+To call make sure you setup [Digits](https://docs.fabric.io/ios/digits/) login and also setup your project with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
 
 Drag the PFUser+Digits.m and PFUser+Digits.h into your XCode project.
 Add the user.js file to your cloud code folder and include in your main.js file 
@@ -51,19 +50,18 @@ or
 
 #Customising
 
-For all the previous examples you can pass an `DGTAppearance` object to customize the *Title*, *Background Color*, *Accent Color* (Font), and *Logo Image*.
+For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
+For more information view the [Official documentation](https://docs.fabric.io/ios/digits/theming.html)
 For example:
 ```objc
-DGTAppearance* appearance = [DGTAppearance new];
-appearance.backgroundColor = [UIColor redColor];
-...
-[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" appearance:appearance];
+[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" backgroundColor:[UIColor whiteColor] accentColor:[UIColor redColor]];
 ```
 
 #Improvements
 If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
 This is due to the fact that currently the only workaround I found to returning a session token from CloudCode was to login the user - and for that you need to specify the password. So the solution for now is to change the user's password before every login.
 Would really like a better solution so if you have any ideas please let me know.
+
 
 #License
 The MIT License

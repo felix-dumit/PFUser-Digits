@@ -8,24 +8,24 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-@class DGTAppearance;
+@class DGTAuthenticationConfiguration;
 
 @interface PFUser (Digits)
 
-+ (void)loginWithDigitsInBackground:(void(^) (PFUser * user, NSError * error))block;
-+ (void)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void(^) (PFUser * user, NSError * error))block;
++ (void)loginWithDigitsInBackground:(void (^) (PFUser *user, NSError *error))block;
++ (void)loginWithDigitsInBackgroundWithConfiguration:(DGTAuthenticationConfiguration *)configuration completion:(void (^) (PFUser *user, NSError *error))block;
 
-+ (BFTask<PFUser*> *)loginWithDigitsInBackground;
-+ (BFTask<PFUser*> *)loginWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance;
++ (BFTask<PFUser *> *)  loginWithDigitsInBackground;
++ (BFTask<PFUser *> *)loginWithDigitsInBackgroundWithConfiguration:(DGTAuthenticationConfiguration *)configuration;
 
-- (void)linkWithDigitsInBackground:(void(^) (BOOL succeeded, NSError * error))block;
+- (void)linkWithDigitsInBackground:(void (^) (BOOL succeeded, NSError *error))block;
 
-- (void)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance completion:(void(^) (BOOL succeeded, NSError * error))block;
+- (void)linkWithDigitsInBackgroundWithConfiguration:(DGTAuthenticationConfiguration *)configuration completion:(void (^) (BOOL succeeded, NSError *error))block;
 
-- (BFTask<NSNumber*> *)linkWithDigitsInBackground;
-- (BFTask<NSNumber*> *)linkWithDigitsInBackgroundWithTitle:(NSString *)title appearance:(DGTAppearance*)appearance;
+- (BFTask<NSNumber *> *)linkWithDigitsInBackground;
+- (BFTask<NSNumber *> *)linkWithDigitsInBackgroundWithConfiguration:(DGTAuthenticationConfiguration *)configuration;
 
-- (BOOL)isLinkedWithDigits;
+- (BOOL)                isLinkedWithDigits;
 
 
 @end
