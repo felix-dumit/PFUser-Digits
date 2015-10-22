@@ -54,7 +54,16 @@ For all the previous examples you can pass an `DGTAuthenticationConfiguration` o
 For more information view the [Official documentation](https://docs.fabric.io/ios/digits/theming.html)
 For example:
 ```objc
-[PFUser loginWithDigitsInBackgroundWithTitle:@"Digits Login" backgroundColor:[UIColor whiteColor] accentColor:[UIColor redColor]];
+DGTAppearance *appearance = [DGTAppearance new];
+appearance.backgroundColor = [UIColor whiteColor];
+appearance.accentColor = [UIColor defaultLightBlueColor];
+appearance.logoImage = [UIImage imageNamed:@"app_icon"];
+
+DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsEmail];
+configuration.appearance = appearance;
+configuration.phoneNumber = [User currentUser].phone;
+configuration.title = NSLocalizedString(@"phone_login_title", nil);
+[PFUser loginWithDigitsInBackgroundWithConfiguration:configuration];
 ```
 
 #Improvements
