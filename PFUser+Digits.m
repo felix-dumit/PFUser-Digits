@@ -19,7 +19,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 
 - (BOOL)isLinkedWithDigits
 {
-    return !([self objectForKey:@"digitsId"] == nil);
+    return !(self[@"digitsId"] == nil);
 }
 
 #pragma mark - Parse Digits Login
@@ -50,17 +50,11 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 {
     return [[[self _privateDigitsLoginWithConfiguration:configuration]
              continueWithSuccessBlock: ^id (BFTask *task) {
-                 DGTSession *session = [task.result
-                                        objectForKey:kSessionKey];
-                 NSString *requestURLString = [task.result
-                                               objectForKey:kRequestURLStringKey];
-                 NSString *authorizationHeader = [task.result
-                                                  objectForKey:kAuthorizationHeaderKey];
+                 NSString *requestURLString = task.result[kRequestURLStringKey];
+                 NSString *authorizationHeader = task.result[kAuthorizationHeaderKey];
                  
                  return [PFCloud callFunctionInBackground:@"loginWithDigits"
                                            withParameters:@{
-                                                            @"digitsId": session.userID,
-                                                            @"phoneNumber": session.phoneNumber,
                                                             @"requestURL": requestURLString,
                                                             @"authHeader": authorizationHeader,
                                                             }];
@@ -96,21 +90,13 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 
 - (BFTask<NSNumber *> *)linkWithDigitsInBackgroundWithConfiguration:(DGTAuthenticationConfiguration *)configuration
 {
-    configuration.phoneNumber = [self objectForKey:@"phone"];
+    configuration.phoneNumber = self[@"phone"];
     return [[[[[self class] _privateDigitsLoginWithConfiguration:configuration] continueWithSuccessBlock: ^id (BFTask *task) {
-        DGTSession *session = [task.result
-                               objectForKey:kSessionKey];
-        NSString *requestURLString = [task.result
-                                      objectForKey:kRequestURLStringKey];
-        NSString *authorizationHeader = [task.result
-                                         objectForKey:kAuthorizationHeaderKey];
+        NSString *requestURLString = task.result[kRequestURLStringKey];
+        NSString *authorizationHeader = task.result[kAuthorizationHeaderKey];
         
         return [PFCloud callFunctionInBackground:@"linkWithDigits"
                                   withParameters:@{
-                                                   @"userId": self.objectId,
-                                                   @"digitsId": session.userID,
-                                                   @"phoneNumber": session.phoneNumber,
-                                                   @"email": session.emailAddress,
                                                    @"requestURL": requestURLString,
                                                    @"authHeader": authorizationHeader,
                                                    }];
@@ -130,20 +116,21 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
                                               configuration:configuration
                                                  completion:^(DGTSession *session, NSError *error) {
                                                      if (error) {
-                                                         [taskCompletion setError:error];
+                                                         [taskCompletion trySetError:error];
                                                          return;
                                                      }
                                                      
-                                                     DGTOAuthSigning *oauthSigning = [[DGTOAuthSigning alloc]  initWithAuthConfig:[Digits sharedInstance].authConfig
-                                                                                                                      authSession:[Digits sharedInstance].session];
+                                                     DGTOAuthSigning *oauthSigning = [[DGTOAuthSigning alloc]
+                                                                                      initWithAuthConfig:[Digits sharedInstance].authConfig
+                                                                                      authSession:[Digits sharedInstance].session];
                                                      
                                                      NSDictionary *authHeaders = [oauthSigning OAuthEchoHeadersToVerifyCredentials];
                                                      NSString *requestURLString = authHeaders[TWTROAuthEchoRequestURLStringKey];
                                                      NSString *authorizationHeader = authHeaders[TWTROAuthEchoAuthorizationHeaderKey];
                                                      
-                                                     [taskCompletion setResult:@{ kSessionKey: session,
-                                                                                  kRequestURLStringKey: requestURLString,
-                                                                                  kAuthorizationHeaderKey: authorizationHeader }];
+                                                     [taskCompletion trySetResult:@{ kSessionKey: session,
+                                                                                     kRequestURLStringKey: requestURLString,
+                                                                                     kAuthorizationHeaderKey: authorizationHeader }];
                                                  }];
     
     return taskCompletion.task;

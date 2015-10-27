@@ -1,78 +1,50 @@
-var _ = require('underscore');
-
-var Buffer = require('buffer').Buffer;
-
-var randomString = function() {
-    var str = new Buffer(24);
-    _.times(24, function(i) {
-        str.set(i, _.random(0, 255));
-    });
-    return str.toString('base64');
-}
-
-var createNewDigitsUser = function(userId) {
-
-    var user = new Parse.User();
-
-    var username = randomString();
-    var password = randomString();
-
-    user.set("username", username);
-    user.set("password", password);
-
-    user.set('digitsId', userId);
-
-    return user.signUp().then(function(user) {
-        return Parse.User.logIn(username, password);
-    }).then(function(user) {
-        return user;
-    }, function(error) {});
-
-};
-
-var verifyDigitsLogin = function(requestURL, authHeader) {
-    var promise = new Parse.Promise();
-    Parse.Cloud.httpRequest({
+var verifyDigitsLogin = function(requestURL, authHeader, link) {
+    var data = undefined;
+    return Parse.Cloud.httpRequest({
         url: requestURL,
         headers: {
             'Authorization': authHeader
         }
     }).then(function(res) {
         if (res.status != 200) {
-            promise.reject("error with echo twitter authentication");
+            return Parse.Promise.error("error with echo twitter authentication");
         } else {
-            promise.resolve(res.data);
+            return res.data;
         }
-    }, function(error) {
-        promise.reject(error);
     });
-
-    return promise;
 };
+
+var fillUserWithVerifiedData = function(user, data) {
+    user.set('phone', data.phone_number);
+    user.set('digitsId', data.id_str);
+    user.set('username', data.id_str);
+    if (data.email_address) {
+        user.set('email', data.email_address.address);
+    }
+    user.set("password", data.access_token.token);
+}
 
 Parse.Cloud.define("linkWithDigits", function(request, response) {
 
     Parse.Cloud.useMasterKey();
 
-    var userId = request.params.userId;
-    var digitsId = request.params.digitsId;
     var requestURL = request.params.requestURL;
     var authHeader = request.params.authHeader;
+    var authData = {};
 
-    verifyDigitsLogin(requestURL, authHeader).then(function() {
+    verifyDigitsLogin(requestURL, authHeader).then(function(data) {
+        authData = data;
         var query = new Parse.Query(Parse.User);
-        query.equalTo('digitsId', digitsId);
+        query.equalTo('digitsId', data.id_str);
         return query.first();
     }).then(function(user) {
         if (user) {
             return Parse.Promise.error("already a user linked with this digits account");
         }
         var query = new Parse.Query(Parse.User);
-        return query.get(userId);
+        return query.get(request.user.id);
     }).then(function(user) {
-        user.set('digitsId', digitsId);
-        user.set('phone', request.params.phoneNumber);
-        user.set('email', request.params.email);
+        fillUserWithVerifiedData(user, authData);
         return user.save();
     }).then(function() {
         response.success(true);
@@ -86,32 +58,21 @@ Parse.Cloud.define("loginWithDigits", function(request, response) {
 
     Parse.Cloud.useMasterKey();
 
-    var userId = request.params.digitsId;
     var requestURL = request.params.requestURL;
     var authHeader = request.params.authHeader;
-    var password = randomString();
 
-    verifyDigitsLogin(requestURL, authHeader).then(function() {
+    verifyDigitsLogin(requestURL, authHeader).then(function(data) {
         var query = new Parse.Query(Parse.User);
-        query.equalTo('digitsId', userId);
-        return query.first({
-            useMasterKey: true
-        }).then(function(user) {
-            if (user) {
-                user.set("password", password);
-                return user.save();
+        query.equalTo('digitsId', data.id_str);
+        return query.first().then(function(user) {
+            if (!user) {
+                user = new Parse.User();
             }
-            return undefined
+            fillUserWithVerifiedData(user, data);
+            return user.save().then(function() {
+                return Parse.User.logIn(user.get("username"), data.access_token.token);
+            });
         });
-    }).then(function(user) {
-        if (user) {
-            return Parse.User.logIn(user.get("username"), password)
-        }
-        return createNewDigitsUser(userId);
-    }).then(function(user) {
-        user.set('phone', request.params.phoneNumber);
-        user.set('email', request.params.email);
-        return user.save();
     }).then(function(user) {
         response.success(user.getSessionToken());
     }, function(error) {
