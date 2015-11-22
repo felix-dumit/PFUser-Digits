@@ -17,8 +17,11 @@ var verifyDigitsLogin = function(requestURL, authHeader, link) {
 var fillUserWithVerifiedData = function(user, data) {
     user.set('phone', data.phone_number);
     user.set('digitsId', data.id_str);
-    user.set('username', data.id_str);
-    if (data.email_address) {
+    
+    if(!user.get('username')){
+        user.set('username', data.id_str);
+    }
+    if (data.email_address && !user.get('email')) {
         user.set('email', data.email_address.address);
     }
     user.set("password", data.access_token.token);
