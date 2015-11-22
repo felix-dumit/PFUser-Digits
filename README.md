@@ -48,6 +48,13 @@ or
 [[PFUser currentUser] linkWithDigitsInBackground:^(PFUser* user, NSError* error) {}]; //block callback
 ```
 
+#Stored properties
+After login or link the user's phone number will be available in the `phone` property, and if the user has linked his email in his digits account (by specifying `DGTAccountFieldsEmail` in the configuration as below for instance) it will be available in the `email` property.
+```objc 
+[[PFUser currentUser] objectForKey:@"phone"]; //access to phone number after login
+[PFUser currentUser].email; //access to email if it was found
+```
+
 #Customising
 
 For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
