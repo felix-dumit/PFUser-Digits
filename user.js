@@ -1,23 +1,30 @@
 var verifyDigitsLogin = function(requestURL, authHeader, link) {
     var data = undefined;
-    return Parse.Cloud.httpRequest({
-        url: requestURL,
-        headers: {
-            'Authorization': authHeader
-        }
-    }).then(function(res) {
-        if (res.status != 200) {
-            return Parse.Promise.error("error with echo twitter authentication");
-        } else {
-            return res.data;
-        }
-    });
+    var url = require('url');
+    var uri = url.parse(requestURL);
+
+    if (uri.hostname === 'api.digits.com') {
+      return Parse.Cloud.httpRequest({
+          url: requestURL,
+          headers: {
+              'Authorization': authHeader
+          }
+      }).then(function(res) {
+          if (res.status != 200) {
+              return Parse.Promise.error("error with echo twitter authentication");
+          } else {
+              return res.data;
+          }
+      });
+  } else {
+    return Parse.Promise.error('Authorization URL failed validation');
+  }
 };
 
 var fillUserWithVerifiedData = function(user, data) {
     user.set('phone', data.phone_number);
     user.set('digitsId', data.id_str);
-    
+
     if(!user.get('username')){
         user.set('username', data.id_str);
     }
