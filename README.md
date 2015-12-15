@@ -74,7 +74,7 @@ configuration.title = NSLocalizedString(@"phone_login_title", nil);
 ```
 
 #Swift
-Although the original objc code should still be usable from swift I did a rough translation of the extension to swift, contributions to it or improvements to the readme with swift examples are much appreciated!
+Although the original objc code should still be usable from swift I did a rough translation of the extension to [PFUser+Digits.swift](https://github.com/felix-dumit/PFUser-Digits/blob/master/PFUser%2BDigits.swift), contributions to it or improvements to the readme with swift examples are much appreciated!
 
 #Improvements
 If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
