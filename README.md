@@ -5,7 +5,7 @@ A way to authenticate Parse Users using the Twitter Digits API
 
 To call make sure you setup [Digits](https://docs.fabric.io/ios/digits/) login and also setup your project with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
 
-Drag the PFUser+Digits.m and PFUser+Digits.h into your XCode project.
+Drag the PFUser+Digits.m and PFUser+Digits.h (or PFUser+Digits.swift) into your XCode project.
 Add the user.js file to your cloud code folder and include in your main.js file 
 ```js
 require('cloud/user.js');
@@ -72,6 +72,9 @@ configuration.phoneNumber = [User currentUser].phone;
 configuration.title = NSLocalizedString(@"phone_login_title", nil);
 [PFUser loginWithDigitsInBackgroundWithConfiguration:configuration];
 ```
+
+#Swift
+Although the original objc code should still be usable from swift I did a rough translation of the extension to swift, contributions to it or improvements to the readme with swift examples are much appreciated!
 
 #Improvements
 If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
