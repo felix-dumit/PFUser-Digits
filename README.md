@@ -55,6 +55,15 @@ After login or link the user's phone number will be available in the `phone` pro
 [PFUser currentUser].email; //access to email if it was found
 ```
 
+#Logout
+Even if you logout your Parse User the Digits session is maintained separately, so if you would like to logout of Digits together with Parse, make sure to do something like below when logging out:
+
+```objc
+[[PFUser logOutInBackground] continueWithSuccessBlock:^(BFTask* task) {
+    [Digits sharedInstance] logout];
+}];
+```
+
 #Customising
 
 For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
