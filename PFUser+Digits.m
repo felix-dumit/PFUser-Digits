@@ -36,7 +36,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
          if (block) {
              block(task.result, task.error);
          }
-         
+
          return nil;
      }];
 }
@@ -52,7 +52,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
              continueWithSuccessBlock: ^id (BFTask *task) {
                  NSString *requestURLString = task.result[kRequestURLStringKey];
                  NSString *authorizationHeader = task.result[kAuthorizationHeaderKey];
-                 
+
                  return [PFCloud callFunctionInBackground:@"loginWithDigits"
                                            withParameters:@{
                                                             @"requestURL": requestURLString,
@@ -78,7 +78,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
          if (block) {
              block(task.error == nil, task.error);
          }
-         
+
          return nil;
      }];
 }
@@ -94,7 +94,7 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
     return [[[[[self class] _privateDigitsLoginWithConfiguration:configuration] continueWithSuccessBlock: ^id (BFTask *task) {
         NSString *requestURLString = task.result[kRequestURLStringKey];
         NSString *authorizationHeader = task.result[kAuthorizationHeaderKey];
-        
+
         return [PFCloud callFunctionInBackground:@"linkWithDigits"
                                   withParameters:@{
                                                    @"requestURL": requestURLString,
@@ -110,8 +110,12 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
 #pragma mark - private Digits login
 + (BFTask *)_privateDigitsLoginWithConfiguration:(DGTAuthenticationConfiguration *)configuration
 {
+    if(!configuration) {
+        configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsNone];
+    }
+
     BFTaskCompletionSource *taskCompletion = [BFTaskCompletionSource taskCompletionSource];
-    
+
     [[Digits sharedInstance] authenticateWithViewController:nil
                                               configuration:configuration
                                                  completion:^(DGTSession *session, NSError *error) {
@@ -119,20 +123,20 @@ static NSString *const kAuthorizationHeaderKey = @"authorizationHeader";
                                                          [taskCompletion trySetError:error];
                                                          return;
                                                      }
-                                                     
+
                                                      DGTOAuthSigning *oauthSigning = [[DGTOAuthSigning alloc]
                                                                                       initWithAuthConfig:[Digits sharedInstance].authConfig
                                                                                       authSession:[Digits sharedInstance].session];
-                                                     
+
                                                      NSDictionary *authHeaders = [oauthSigning OAuthEchoHeadersToVerifyCredentials];
                                                      NSString *requestURLString = authHeaders[TWTROAuthEchoRequestURLStringKey];
                                                      NSString *authorizationHeader = authHeaders[TWTROAuthEchoAuthorizationHeaderKey];
-                                                     
+
                                                      [taskCompletion trySetResult:@{ kSessionKey: session,
                                                                                      kRequestURLStringKey: requestURLString,
                                                                                      kAuthorizationHeaderKey: authorizationHeader }];
                                                  }];
-    
+
     return taskCompletion.task;
 }
 
