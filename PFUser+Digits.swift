@@ -3,7 +3,6 @@
 //  Umwho
 //
 //  Created by Felix Dumit on 12/15/15.
-//  Copyright © 2015 Umwho. All rights reserved.
 //
 
 import Foundation
@@ -42,7 +41,7 @@ extension PFUser {
     public static func loginWithDigitsInBackgroundWithConfiguration(configuration: DGTAuthenticationConfiguration?) -> BFTask {
         
         return PFUser._privateDigitsLoginWithConfiguration(configuration).continueWithSuccessBlock{ task in
-            guard let result = task.result else {
+            guard let result = task.result as? [String:AnyObject] else {
                 return nil
             }
             let requestURLString = result[Constants.requestURLStringKey] as! String
@@ -72,7 +71,7 @@ extension PFUser {
         }
         
         return PFUser._privateDigitsLoginWithConfiguration(configuration).continueWithSuccessBlock { task in
-            guard let result = task.result else {
+            guard let result = task.result as? [String:AnyObject] else {
                 return nil
             }
             let requestURLString = result[Constants.requestURLStringKey] as! String

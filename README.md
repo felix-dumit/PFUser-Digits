@@ -5,7 +5,7 @@ A way to authenticate Parse Users using the Twitter Digits API
 
 To call make sure you setup [Digits](https://docs.fabric.io/ios/digits/) login and also setup your project with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
 
-Drag the PFUser+Digits.m and PFUser+Digits.h into your XCode project.
+Drag the PFUser+Digits.m and PFUser+Digits.h (or PFUser+Digits.swift) into your XCode project.
 Add the user.js file to your cloud code folder and include in your main.js file 
 ```js
 require('cloud/user.js');
@@ -55,6 +55,15 @@ After login or link the user's phone number will be available in the `phone` pro
 [PFUser currentUser].email; //access to email if it was found
 ```
 
+#Logout
+Even if you logout your Parse User the Digits session is maintained separately, so if you would like to logout of Digits together with Parse, make sure to do something like below when logging out:
+
+```objc
+[[PFUser logOutInBackground] continueWithSuccessBlock:^(BFTask* task) {
+    [Digits sharedInstance] logout];
+}];
+```
+
 #Customising
 
 For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
@@ -72,6 +81,9 @@ configuration.phoneNumber = [User currentUser].phone;
 configuration.title = NSLocalizedString(@"phone_login_title", nil);
 [PFUser loginWithDigitsInBackgroundWithConfiguration:configuration];
 ```
+
+#Swift
+Although the original objc code should still be usable from swift I did a rough translation of the extension to [PFUser+Digits.swift](https://github.com/felix-dumit/PFUser-Digits/blob/master/PFUser%2BDigits.swift), contributions to it or improvements to the readme with swift examples are much appreciated!
 
 #Improvements
 If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
