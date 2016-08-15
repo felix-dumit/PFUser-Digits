@@ -3,14 +3,13 @@ PFUser-Digits
 
 A way to authenticate Parse Users using the Twitter Digits API
 
-To call make sure you setup [Digits](https://docs.fabric.io/ios/digits/) login and also setup your project with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
+Make sure you setup your project with [Digits](https://docs.fabric.io/ios/digits/) and with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
 
-Drag the PFUser+Digits.m and PFUser+Digits.h (or PFUser+Digits.swift) into your XCode project.
-Add the user.js file to your cloud code folder and include in your main.js file 
-```js
-require('cloud/user.js');
-``` 
-or copy the contents to main.js
+## Installation
+
+Add the files "PFUser+Digits.{h,m}" to your project.
+
+Note: This cannot be a cocoapod at the moment since `Digits` is a static binary so it cannot be added as a dependency. If anyone knows a workaround please let me know.
 
 #Login with Digits
 
@@ -49,11 +48,17 @@ or
 ```
 
 #Stored properties
-After login or link the user's phone number will be available in the `phone` property, and if the user has linked his email in his digits account (by specifying `DGTAccountFieldsEmail` in the configuration as below for instance) it will be available in the `email` property.
+After login or link theese digits properties are available for the current user:
+
 ```objc 
-[[PFUser currentUser] objectForKey:@"phone"]; //access to phone number after login
-[PFUser currentUser].email; //access to email if it was found
+-(nullable NSString *)digitsId;
+-(nullable NSString *)digitsEmail;
+-(nullable NSString *)digitsPhone;
 ```
+
+You may wish to copy the `digitsEmail` to the stored `email` property on PFUser.
+
+Note: to get the email you must specify `DGTAccountFieldsEmail` in the configuration as below for instance)
 
 #Logout
 Even if you logout your Parse User the Digits session is maintained separately, so if you would like to logout of Digits together with Parse, make sure to do something like below when logging out:
@@ -69,6 +74,7 @@ Even if you logout your Parse User the Digits session is maintained separately, 
 For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
 For more information view the [Official documentation](https://docs.fabric.io/ios/digits/theming.html)
 For example:
+
 ```objc
 DGTAppearance *appearance = [DGTAppearance new];
 appearance.backgroundColor = [UIColor whiteColor];
@@ -82,13 +88,9 @@ configuration.title = NSLocalizedString(@"phone_login_title", nil);
 [PFUser loginWithDigitsInBackgroundWithConfiguration:configuration];
 ```
 
-#Swift
-Although the original objc code should still be usable from swift I did a rough translation of the extension to [PFUser+Digits.swift](https://github.com/felix-dumit/PFUser-Digits/blob/master/PFUser%2BDigits.swift), contributions to it or improvements to the readme with swift examples are much appreciated!
 
-#Improvements
-If you are using revokable sessions, make sure to disable `revoking sessions when user changes password`.
-This is due to the fact that currently the only workaround I found to returning a session token from CloudCode was to login the user - and for that you need to specify the password. So the solution for now is to change the user's password before every login.
-Would really like a better solution so if you have any ideas please let me know.
+#Old Version
+If you are looking for the old version of this repo, which required you to add extra cloud-code as well, it is still available under this branch: [old-version](https://github.com/felix-dumit/PFUser-Digits/tree/old-version)
 
 
 #License
