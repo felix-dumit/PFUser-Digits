@@ -14,11 +14,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PFUser (Digits)
 
-+ (void)loginWithDigitsInBackground:(void (^) (PFUser *user, NSError *error))block;
-+ (void)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration completion:(void (^) (PFUser *user, NSError *error))block;
++(void) enableDigitsLogin;
 
-+ (BFTask<PFUser *> *)  loginWithDigitsInBackground;
-+ (BFTask<PFUser *> *)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration;
+-(nullable NSString *)digitsId;
+-(nullable NSString *)digitsEmail;
+-(nullable NSString *)digitsPhone;
+
++ (void)loginWithDigitsInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
++ (void)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration completion:(void (^) (__kindof PFUser *, NSError *error))block;
+
++ (BFTask<__kindof PFUser *> *)  loginWithDigitsInBackground;
++ (BFTask<__kindof PFUser *> *)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration;
 
 - (void)linkWithDigitsInBackground:(void (^) (BOOL succeeded, NSError *error))block;
 
