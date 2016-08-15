@@ -171,8 +171,7 @@ static NSString *const kDigitsAuthParamEmail = @"email";
 }
 
 -(void)digitsSessionHasChanged:(DGTSession *)newSession {
-    //do this?
-    //[[PFUser currentUser] linkWithDigitsSession:newSession];
+    [[PFUser currentUser] linkWithDigitsSession:newSession];
 }
 
 -(void)digitsSessionExpiredForUserID:(NSString *)userID {
