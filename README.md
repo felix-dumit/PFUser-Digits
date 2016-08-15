@@ -11,7 +11,16 @@ Add the files "PFUser+Digits.{h,m}" to your project.
 
 Note: This cannot be a cocoapod at the moment since `Digits` is a static binary so it cannot be added as a dependency. If anyone knows a workaround please let me know.
 
+#Parse.com version
+If you are still using the Parse.com hosted server, you should use the old version of this repo, which required you to add extra cloud-code as well, it is still available under this branch: [parse-hosted](https://github.com/felix-dumit/PFUser-Digits/tree/parse-hosted)
+
 #Login with Digits
+
+When you setup parse, you also need to call:
+
+```objc
+[PFUser enableDigitsLogin]
+```
 
 To use just call the function which will trigger the Digits sign-in flow and when succeded, will authenticate or create a new user on Parse.
 
@@ -88,9 +97,6 @@ configuration.title = NSLocalizedString(@"phone_login_title", nil);
 [PFUser loginWithDigitsInBackgroundWithConfiguration:configuration];
 ```
 
-
-#Old Version
-If you are looking for the old version of this repo, which required you to add extra cloud-code as well, it is still available under this branch: [old-version](https://github.com/felix-dumit/PFUser-Digits/tree/old-version)
 
 
 #License
