@@ -11,6 +11,23 @@ Add the files "PFUser+Digits.{h,m}" to your project.
 
 Note: This cannot be a cocoapod at the moment since `Digits` is a static binary so it cannot be added as a dependency. If anyone knows a workaround please let me know.
 
+Make sure to setup the twitter oauth when starting your parse server:
+
+```js
+var api = new ParseServer({
+    ...
+    oauth: {
+        twitter: {
+            consumer_key: "CONSUMERKEY",
+            consumer_secret: "CONSUMERSECRET"
+        },
+        facebook: {
+            appIds: "FACEBOOK"
+        }
+    }
+});
+```
+
 #Parse.com version
 If you are still using the Parse.com hosted server, you should use the old version of this repo, which required you to add extra cloud-code as well, it is still available under this branch: [parse-hosted](https://github.com/felix-dumit/PFUser-Digits/tree/parse-hosted)
 
@@ -19,7 +36,7 @@ If you are still using the Parse.com hosted server, you should use the old versi
 When you setup parse, you also need to call:
 
 ```objc
-[PFUser enableDigitsLogin]
+[PFUser enableDigitsLogin];
 ```
 
 To use just call the function which will trigger the Digits sign-in flow and when succeded, will authenticate or create a new user on Parse.
