@@ -3,7 +3,7 @@ PFUser-Digits
 
 A way to authenticate Parse Users using the Twitter Digits API
 
-Make sure you setup your project with [Digits](https://docs.fabric.io/ios/digits/) and with [Parse](https://www.parse.com/docs/ios_guide#top/iOS)
+Make sure you setup your project with [Digits](https://docs.fabric.io/ios/digits/) and with [Parse](https://parseplatform.github.io/)
 
 ## Installation
 
