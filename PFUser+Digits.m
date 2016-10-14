@@ -153,7 +153,7 @@ static NSString *const kDigitsAuthParamEmail = @"email";
 }
 
 -(BOOL)restoreAuthenticationWithAuthData:(NSDictionary<NSString *,NSString *> *)authData {
-    if (!authData) {
+    if (![authData isKindOfClass:[NSDictionary class]]) {
         return NO;
     }
     DGTSession* session = [Digits sharedInstance].session;
