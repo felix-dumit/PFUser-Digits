@@ -123,6 +123,10 @@ static NSString *const kDigitsAuthParamEmail = @"email";
     return [self linkWithAuthTypeInBackground:PFDigitsAuthenticationType authData:[PFDigitsDelegate authDataForSession:session]];
 }
 
+-(BFTask<NSNumber *> *)unlinkWithDigits {
+    return [self unlinkWithAuthTypeInBackground:PFDigitsAuthenticationType];
+}
+
 #pragma mark - Digits
 + (BFTask <DGTSession *> *)authenticateWithDigitsWithConfiguration:(DGTAuthenticationConfiguration*)configuration {
 
