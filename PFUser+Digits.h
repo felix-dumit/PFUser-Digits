@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BFTask<NSNumber *> *)linkWithDigitsInBackground;
 - (BFTask<NSNumber *> *)linkWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration;
+- (BFTask<NSNumber *> *)unlinkWithDigits;
 
 - (BOOL)                isLinkedWithDigits;
 
