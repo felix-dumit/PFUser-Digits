@@ -169,8 +169,20 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
     if (![authData isKindOfClass:[NSDictionary class]]) {
         return NO;
     }
+    
     DGTSession* session = [Digits sharedInstance].session;
-    return [session.userID isEqualToString:authData[kDigitsAuthParamId]];
+    if(![session.userID isEqualToString:authData[kDigitsAuthParamId]] ||
+       ![session.authToken isEqualToString:authData[kDigitsAuthParamToken]]) {
+        //TODO: figure out how to do something like this (similar to how FB auth works:
+        //        [Digits sharedInstance].session = [[DGTSession alloc] initWithAuthToken:authData[kDigitsAuthParamToken]
+        //                                                                authTokenSecret:authData[kDigitsAuthParamTokenSecret]
+        //                                                                         userID:authData[kDigitsAuthParamId]
+        //                                                                    phoneNumber:authData[kDigitsAuthParamPhone]
+        //                                                                   emailAddress:authData[kDigitsAuthParamEmail]
+        //                                                         emailAddressIsVerified:authData[kDigitsAuthParamEmailVerified]];
+    }
+    
+    return YES;
 }
 
 +(NSDictionary<NSString *,NSString *> *)authDataForSession:(nonnull DGTSession*)session {
