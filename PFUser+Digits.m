@@ -134,17 +134,21 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 
 #pragma mark - Digits
 + (BFTask <DGTSession *> *)authenticateWithDigitsWithConfiguration:(DGTAuthenticationConfiguration*)configuration {
-
-    BFTaskCompletionSource* tsk = [BFTaskCompletionSource taskCompletionSource];
+    
+    BFTaskCompletionSource* tcs = [BFTaskCompletionSource taskCompletionSource];
     [[Digits sharedInstance] authenticateWithViewController:nil configuration:configuration completion:^(DGTSession *session, NSError *error) {
         if(error){
-            [tsk trySetError:error];
+            if([error.domain isEqualToString:@"DigitsErrorDomain"] && error.code == 1) {
+                [tcs trySetCancelled];
+            } else {
+                [tcs trySetError:error];
+            }
         } else {
-            [tsk trySetResult:session];
+            [tcs trySetResult:session];
         }
     }];
-
-    return tsk.task;
+    
+    return tcs.task;
 }
 
 @end
