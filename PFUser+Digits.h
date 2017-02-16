@@ -16,9 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 +(void) enableDigitsLogin;
 
--(nullable NSString *)digitsId;
--(nullable NSString *)digitsEmail;
--(nullable NSString *)digitsPhone;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * _Nullable digitsId;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * _Nullable digitsEmail;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * _Nullable digitsPhone;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL digitsEmailVerified;
 
 + (void)loginWithDigitsInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
 + (void)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration completion:(void (^) (__kindof PFUser *, NSError *error))block;
@@ -34,7 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BFTask<NSNumber *> *)linkWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration;
 - (BFTask<NSNumber *> *)unlinkWithDigits;
 
-- (BOOL)                isLinkedWithDigits;
+
+@property (NS_NONATOMIC_IOSONLY, getter=isLinkedWithDigits, readonly) BOOL linkedWithDigits;
 
 
 @end
