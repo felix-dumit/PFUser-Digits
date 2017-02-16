@@ -18,6 +18,7 @@ static NSString *const kDigitsAuthParamTokenSecret = @"auth_token_secret";
 static NSString *const kDigitsAuthParamId = @"id";
 static NSString *const kDigitsAuthParamPhone = @"phone";
 static NSString *const kDigitsAuthParamEmail = @"email";
+static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 
 @interface PFDigitsDelegate : NSObject<PFUserAuthenticationDelegate, DGTSessionUpdateDelegate>
 
@@ -54,6 +55,10 @@ static NSString *const kDigitsAuthParamEmail = @"email";
 
 -(NSString*)digitsPhone {
     return [self digitsAuthData][kDigitsAuthParamPhone];
+}
+
+-(BOOL)digitsEmailVerified {
+    return [self digitsAuthData][kDigitsAuthParamEmailVerified];
 }
 
 #pragma mark - Parse Digits Login
@@ -170,6 +175,7 @@ static NSString *const kDigitsAuthParamEmail = @"email";
     dict[kDigitsAuthParamToken] = session.authToken;
     dict[kDigitsAuthParamTokenSecret] = session.authTokenSecret;
     dict[kDigitsAuthParamPhone] = session.phoneNumber;
+    dict[kDigitsAuthParamEmailVerified] = @(session.emailAddressIsVerified);
     if(session.emailAddress) dict[kDigitsAuthParamEmail] = session.emailAddress;
     return [dict copy];
 }
