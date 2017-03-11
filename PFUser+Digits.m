@@ -58,7 +58,7 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 }
 
 -(BOOL)digitsEmailVerified {
-    return [self digitsAuthData][kDigitsAuthParamEmailVerified];
+    return [self digitsAuthData][kDigitsAuthParamEmailVerified] != nil;
 }
 
 #pragma mark - Parse Digits Login
