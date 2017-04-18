@@ -28,10 +28,10 @@ var api = new ParseServer({
 });
 ```
 
-#Parse.com version
+# Parse.com version
 If you are still using the Parse.com hosted server, you should use the old version of this repo, which required you to add extra cloud-code as well, it is still available under this branch: [parse-hosted](https://github.com/felix-dumit/PFUser-Digits/tree/parse-hosted)
 
-#Login with Digits
+# Login with Digits
 
 When you setup parse, you also need to call:
 
@@ -61,7 +61,7 @@ Or Using Bolts:
 }];
 ```
 
-#Link Existing Account
+# Link Existing Account
 
 You can also link an existing account (anonymous or not) with Digits. This works in the same way as linking with Facebook and allows you to later on log back in using the Digits sign-in
 
@@ -73,7 +73,7 @@ or
 [[PFUser currentUser] linkWithDigitsInBackground:^(PFUser* user, NSError* error) {}]; //block callback
 ```
 
-#Stored properties
+# Stored properties
 After login or link theese digits properties are available for the current user:
 
 ```objc 
@@ -86,7 +86,7 @@ You may wish to copy the `digitsEmail` to the stored `email` property on PFUser.
 
 Note: to get the email you must specify `DGTAccountFieldsEmail` in the configuration as below for instance)
 
-#Logout
+# Logout
 Even if you logout your Parse User the Digits session is maintained separately, so if you would like to logout of Digits together with Parse, make sure to do something like below when logging out:
 
 ```objc
@@ -95,7 +95,7 @@ Even if you logout your Parse User the Digits session is maintained separately, 
 }];
 ```
 
-#Customising
+# Customising
 
 For all the previous examples you can pass an `DGTAuthenticationConfiguration` object. Use it to configure the appearance of the login screen or pass in the phone number to verify.
 For more information view the [Official documentation](https://docs.fabric.io/ios/digits/theming.html)
@@ -116,7 +116,7 @@ configuration.title = NSLocalizedString(@"phone_login_title", nil);
 
 
 
-#License
+# License
 The MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
