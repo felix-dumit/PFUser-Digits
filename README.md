@@ -5,6 +5,95 @@ A way to authenticate Parse Users using the Twitter Digits API
 
 Make sure you setup your project with [Digits](https://docs.fabric.io/ios/digits/) and with [Parse](https://parseplatform.github.io/)
 
+
+## **Digits -> Firebase Migration
+Steps:
+### 1) Official Migration: 
+[https://docs.fabric.io/apple/digits/apple-migration.html]()
+
+### 2) Parse-Server changes:
+Copy the `firebaseServiceAccountKey.json` from firebase into your server root folder, then add these before creating `ParseServer`:
+
+```js
+process.env.FIREBASE_SERVICE_ACCOUNT_KEY = `${__dirname}/firebaseServiceAccountKey.json`;
+process.env.FIREBASE_DATABASE_URL = "https://api-project-SOME_NUMBER.firebaseio.com";
+```
+
+Add this adapter when creating `ParseServer`:
+
+```js
+oauth: {
+    firebase: require("parse-server-firebase-auth-adapter")
+}
+```
+
+#### Existing users with expired token
+If there are any existing users, which are no longer logged into your digits session and you'd like to migrate them to a firebase session (you can't do it through the app if they're not logged in), you will need to manually add the following field in their mongoDB user instance:
+
+```js
+"_auth_data_firebase" : {
+   "id" : "COPY_THEIR_DIGITS_ID_HERE", 
+}
+```
+
+<details>
+  <summary>You can run this script in mongoShell
+</summary>
+
+```js
+users = db.getCollection("_User")
+
+results = users.find({
+  "_auth_data_twitter": {"$exists": true},
+  "_auth_data_firebase": {"$exists": false}
+ }).toArray()
+
+results.forEach(function(e,i) { 
+  d = {
+    $set: {"_auth_data_firebase": {"id": e["_auth_data_twitter"]["id"] }} 
+  } 
+  users.update(e, d)
+  print(e["_id"]) 
+})
+```
+</details>
+
+
+
+### 3) iOS Changes
+This assumes you have already succesfully integrated Firebase into your project, as per the official migration guide.
+Make sure you have these pods installed:
+
+```ruby
+pod "Fabric"
+pod "Digits"
+pod "Firebase/Core"
+pod "Firebase/Auth"
+pod "FirebaseUI/Phone"
+pod "DigitsMigrationHelper"
+```
+
+Add the files "PFUser+Firebase.{h,m}" to your project.
+
+Initialization (after you setup parse):
+
+```objc 
+[PFUser enableFirebaseLogin];
+[FIRApp configure];
+```
+
+Call this if your user is logged in (through digits):
+
+```objc
+[[User currentUser] tryMigrateDigitsSessionWithConsumerKey:@"KEY" consumerSecret:@"SECRET"];
+```
+
+Call these instead of the digits methods: 
+```objc
+[User loginWithFirebaseInBackground];
+[[User currentUser] linkWithFirebaseInBackground];
+```
+
 ## Installation
 
 Add the files "PFUser+Digits.{h,m}" to your project.
