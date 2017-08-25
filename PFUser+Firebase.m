@@ -140,13 +140,15 @@ static NSString *const kFirebaseAuthParamEmailVerified = @"email_verified";
     //            NSLog(@"Logged in: %@ - %@", user, error);
     //        }];
     //    }];
-    
-    UIViewController* vc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     FUIAuth* auth = [FUIAuth defaultAuthUI];
     auth.delegate = [PFFirebaseDelegate sharedInstance];
     FUIPhoneAuth* phoneAuth = [[FUIPhoneAuth alloc] initWithAuthUI:auth];
     auth.providers = @[phoneAuth];
-    [phoneAuth signInWithPresentingViewController:vc];
+    
+    [[BFExecutor mainThreadExecutor] execute:^{
+        UIViewController* vc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+        [phoneAuth signInWithPresentingViewController:vc];
+    }];
     
     [PFFirebaseDelegate sharedInstance].loginTCS = tcs;
     
