@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * _Nullable firebasePhone;
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL firebaseEmailVerified;
 
++ (BFTask*) cleanupFirebaseSessionAfterLogout;
+
 + (void)loginWithFirebaseInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
 + (BFTask<__kindof PFUser *> *)  loginWithFirebaseInBackground;
 

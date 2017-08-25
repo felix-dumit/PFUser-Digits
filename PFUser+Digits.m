@@ -9,9 +9,9 @@
 #import <DigitsKit/DigitsKit.h>
 #import "PFUser+Digits.h"
 
+
 //TODO: change to digits?
 NSString *const PFDigitsAuthenticationType = @"twitter";
-
 
 static NSString *const kDigitsAuthParamToken = @"auth_token";
 static NSString *const kDigitsAuthParamTokenSecret = @"auth_token_secret";
@@ -19,6 +19,7 @@ static NSString *const kDigitsAuthParamId = @"id";
 static NSString *const kDigitsAuthParamPhone = @"phone";
 static NSString *const kDigitsAuthParamEmail = @"email";
 static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
+
 
 @interface PFDigitsDelegate : NSObject<PFUserAuthenticationDelegate, DGTSessionUpdateDelegate>
 
@@ -62,6 +63,11 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 }
 
 #pragma mark - Parse Digits Login
++ (void) cleanupDigitsSessionAfterLogout
+{
+    [[Digits sharedInstance] logOut];
+}
+
 + (void)loginWithDigitsInBackground:(void (^)(__kindof PFUser *user, NSError *error))block
 {
     [self loginWithDigitsInBackgroundWithConfiguration:nil completion:block];
@@ -75,7 +81,7 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
          if (block) {
              block(task.result, task.error);
          }
-
+         
          return nil;
      }];
 }
@@ -107,7 +113,7 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
          if (block) {
              block(task.error == nil, task.error);
          }
-
+         
          return nil;
      }];
 }
@@ -134,8 +140,9 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 
 #pragma mark - Digits
 + (BFTask <DGTSession *> *)authenticateWithDigitsWithConfiguration:(DGTAuthenticationConfiguration*)configuration {
-    
+
     BFTaskCompletionSource* tcs = [BFTaskCompletionSource taskCompletionSource];
+    
     [[Digits sharedInstance] authenticateWithViewController:nil configuration:configuration completion:^(DGTSession *session, NSError *error) {
         if(error){
             if([error.domain isEqualToString:@"DigitsErrorDomain"] && error.code == 1) {
@@ -197,7 +204,11 @@ static NSString *const kDigitsAuthParamEmailVerified = @"email_verified";
 }
 
 -(void)digitsSessionHasChanged:(DGTSession *)newSession {
-    [[PFUser currentUser] linkWithDigitsSession:newSession];
+    if(newSession) {
+        [[PFUser currentUser] linkWithDigitsSession:newSession];
+    } else {
+        NSAssert(newSession != nil, @"session should not be nil");
+    }
 }
 
 -(void)digitsSessionExpiredForUserID:(NSString *)userID {

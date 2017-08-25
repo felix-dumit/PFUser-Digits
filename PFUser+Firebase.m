@@ -70,6 +70,17 @@ static NSString *const kFirebaseAuthParamEmailVerified = @"email_verified";
 }
 
 #pragma mark - Parse Firebase Login
++ (BFTask*) cleanupFirebaseSessionAfterLogout
+{
+    NSError* error = nil;
+    [[FIRAuth auth] signOut:&error];
+    if(error) {
+        return [BFTask taskWithError:error];
+    }
+    return [BFTask taskWithResult:nil];
+}
+
+
 + (void)loginWithFirebaseInBackground:(void (^)(__kindof PFUser *user, NSError *error))block
 {
     [[self loginWithFirebaseInBackground]

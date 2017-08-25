@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * _Nullable digitsPhone;
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL digitsEmailVerified;
 
++ (void) cleanupDigitsSessionAfterLogout;
+
 + (void)loginWithDigitsInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
 + (void)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration completion:(void (^) (__kindof PFUser *, NSError *error))block;
 
