@@ -33,6 +33,7 @@ If there are any existing users, which are no longer logged into your digits ses
 ```js
 "_auth_data_firebase" : {
    "id" : "COPY_THEIR_DIGITS_ID_HERE", 
+   "access_token": "invalid"
 }
 ```
 
@@ -50,7 +51,7 @@ results = users.find({
 
 results.forEach(function(e,i) { 
   d = {
-    $set: {"_auth_data_firebase": {"id": e["_auth_data_twitter"]["id"] }} 
+    $set: {"_auth_data_firebase": {"id": e["_auth_data_twitter"]["id"], "access_token": "invalid"}} 
   } 
   users.update(e, d)
   print(e["_id"]) 
