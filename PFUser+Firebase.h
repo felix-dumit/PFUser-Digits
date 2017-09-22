@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BFTask*) cleanupFirebaseSessionAfterLogout;
 
-+ (void)loginWithFirebaseInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
++ (void)loginWithFirebaseInBackground:(void (^) (__kindof PFUser * _Nullable, NSError * _Nullable))block;
 + (BFTask<__kindof PFUser *> *)  loginWithFirebaseInBackground;
 
 - (void)linkWithFirebaseInBackground:(void (^) (BOOL succeeded, NSError *error))block;
