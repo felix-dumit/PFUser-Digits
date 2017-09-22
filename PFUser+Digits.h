@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void) cleanupDigitsSessionAfterLogout;
 
-+ (void)loginWithDigitsInBackground:(void (^) (__kindof PFUser *, NSError *error))block;
++ (void)loginWithDigitsInBackground:(void (^) (__kindof PFUser * _Nullable, NSError * _Nullable))block;
 + (void)loginWithDigitsInBackgroundWithConfiguration:(nullable DGTAuthenticationConfiguration *)configuration completion:(void (^) (__kindof PFUser *, NSError *error))block;
 
 + (BFTask<__kindof PFUser *> *)  loginWithDigitsInBackground;
